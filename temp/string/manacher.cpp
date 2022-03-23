@@ -1,33 +1,29 @@
+#include <string>
 #include <iostream>
 using namespace std;
 
-int manacher(string S) {					// manacher
-	if(S.size() == 0) return 0;				// 空串返回0。
+string manacher(string S) {						// manacher
+	if(S.size() <= 1) return S;					// 长度小于等于1，返回串本身
+	int len = S.size() * 2 + 1;					// 构造串长度 = 2*原串长度+1
 	
-	int len = S.size() * 2 + 1;				// 构造串长度。
+	char *s  = new char[len];					// 申请构造串空间
+	int *p = new int[len];						// 申请对称半径空间
 	
-	char *s  = new char[len];				// 构造串。
-	int *p = new int[len];					// 对称半径。
-	
-	for (int i=0, j=0; i<len; i++)
-		s[i] = (i&1) ? S[j++] : '#';		// 构造串。
+	for (int i=0,j=0; i<len; i++)				// 生成构造串
+		s[i] = (i&1) ? S[j++] : '#';			// 原串间隔插入'#'
 		
-	int R=-1, C=-1, ans=0;
-	for (int i=0; i<len; i++)
+	int R = -1, C = -1, m = 0, c = 0;			// R：对称串右端点，C：对称串中心点
+	for (int i=0; i<len; i++)					// m：最大对称半径，c：最大对称中心
 	{
-		p[i] = R>i ? min(R-i, p[C*2-i]) : 1;
-		#define l i-p[i]
-		#define r i+p[i]
-		while (l>=0 && r<len && s[l]==s[r]) 
+		p[i] = R>i ? min(R-i, p[C*2-i]) : 1;	// 计算当前对称半径大小
+		#define l i - p[i]						// 对称串左端点
+		#define r i + p[i]						// 对称串右端点
+		while (l>=0 && r<len && s[l]==s[r])		// 更新当前对称半径大小
 			p[i] ++;
-		if (r > R) R = (C=i) + p[i];
-		ans = max(ans, p[i]);
+		if (r > R) R = (C = i) + p[i];			// 更新右端点和对称中心
+		if (p[i] > m) m = p[i], c = C;			// 更新最大对称半径和最大对中心
 	}
-	
-	delete[] s; 
-	delete[] p;
-	
-	return ans - 1;
+	return string(S.begin()+(c-m+1)/2, S.begin()+(c+m-1)/2);  // 返回答案
 }
 
 int main()
