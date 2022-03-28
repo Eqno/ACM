@@ -25,7 +25,6 @@ void tarjan(int u, int e)
         {
             tarjan(v, i);
             low[u] = min(low[u], low[v]);
-            printf("%d %d\n", low[v], dfn[u]);
             if (low[v] > dfn[u])
                 bdg[i] = bdg[i^1] = 1;
         }
