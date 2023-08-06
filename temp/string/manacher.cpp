@@ -13,8 +13,7 @@ string manacher(string S) {						// manacher
 		s[i] = (i&1) ? S[j++] : '#';			// 原串间隔插入'#'
 		
 	int R = -1, C = -1, m = 0, c = 0;			// R：对称串右端点，C：对称串中心点
-	for (int i=0; i<len; i++)					// m：最大对称半径，c：最大对称中心
-	{
+	for (int i=0; i<len; i++) {					// m：最大对称半径，c：最大对称中心
 		p[i] = R>i ? min(R-i, p[C*2-i]) : 1;	// 计算当前对称半径大小
 		#define l i - p[i]						// 对称串左端点
 		#define r i + p[i]						// 对称串右端点
@@ -26,8 +25,7 @@ string manacher(string S) {						// manacher
 	return string(S.begin()+(c-m+1)/2, S.begin()+(c+m-1)/2);  // 返回答案
 }
 
-int main()
-{
+int main() {
 	string s;
 	getline(cin,s);
 	cout << manacher(s);
